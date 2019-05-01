@@ -18,22 +18,20 @@ import java.util.List;
 
 public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
 
-    private final Context mP_context;
-    private final List<String> mP_item;
-    private final List<String> mP_path;
-    private final Boolean mP_isRoot;
-    public ArrayList<Integer> m_selectedItem;
+    private final List<String> mItems;
+    private final List<String> mPaths;
+    private final Boolean mIsRoot;
+    public ArrayList<Integer> mSelectedItem;
     private final LayoutInflater mInflater;
 
     View.OnClickListener mOnItemClickListener;
 
-    public FileAdapter(Context p_context, List<String> p_item, List<String> p_path, Boolean p_isRoot) {
-        mInflater = LayoutInflater.from(p_context);
-        mP_context = p_context;
-        mP_item = p_item;
-        mP_path = p_path;
-        mP_isRoot = p_isRoot;
-        m_selectedItem = new ArrayList<>();
+    public FileAdapter(Context context, List<String> items, List<String> paths, Boolean isRoot) {
+        mInflater = LayoutInflater.from(context);
+        mItems = items;
+        mPaths = paths;
+        mIsRoot = isRoot;
+        mSelectedItem = new ArrayList<>();
     }
     @NonNull
     @Override
@@ -44,23 +42,23 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int position) {
-        if(!mP_isRoot && position == 0)
+        if(!mIsRoot && position == 0)
         {
             viewHolder.chkFile.setVisibility(View.INVISIBLE);
         }
-        viewHolder.txtFileName.setText(mP_item.get(position));
+        viewHolder.txtFileName.setText(mItems.get(position));
         viewHolder.txtLasModified.setText(getLastDate(position));
-        viewHolder.imgFileType.setImageResource(setFileImageType(new File(mP_path.get(position))));
+        viewHolder.imgFileType.setImageResource(setFileImageType(new File(mPaths.get(position))));
         viewHolder.chkFile.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked)
                 {
-                    m_selectedItem.add(position);
+                    mSelectedItem.add(position);
                 }
                 else
                 {
-                    m_selectedItem.remove(m_selectedItem.indexOf(position));
+                    mSelectedItem.remove(mSelectedItem.indexOf(position));
                 }
             }
         });
@@ -69,8 +67,8 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        if(mP_item != null)
-            return mP_item.size();
+        if(mItems != null)
+            return mItems.size();
         return 0;
     }
 
@@ -118,7 +116,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
 
     String getLastDate(int p_pos)
     {
-        File m_file=new File(mP_path.get(p_pos));
+        File m_file=new File(mPaths.get(p_pos));
         SimpleDateFormat m_dateFormat=new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         return m_dateFormat.format(m_file.lastModified());
     }
